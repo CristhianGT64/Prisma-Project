@@ -3,3 +3,4 @@
 npm Install -> Instalar carpeta node modules.
 npm i react-router -> instalar enruatamiento con react
 npm install tailwindcss @tailwindcss/vite -> instalar tailwind
+npm install @tanstack/react-query
