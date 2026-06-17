@@ -1,6 +1,6 @@
 import type { Usuario } from "../interfaces/Usuario";
 
-export const usuarios : Usuario [] = [
+export const usuarios: Usuario[] = [
     {
         id: "USR001",
         nombres: "Juan",
