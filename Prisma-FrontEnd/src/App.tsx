@@ -23,6 +23,8 @@ import EspacioDetallePage from "./pages/arrendatario/EspacioDetallePage";
 import ReservaFechaHoraPage from "./pages/arrendatario/ReservaFechaHoraPage";
 import ReservaPagoPage from "./pages/arrendatario/ReservaPagoPage";
 import ReservaConfirmacionPage from "./pages/arrendatario/ReservaConfirmacionPage";
+import MisReservasPage from "./pages/arrendatario/MisReservasPage";
+import FavoritosPage from "./pages/arrendatario/FavoritosPage";
 
 // Guard de autenticación
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -147,16 +149,19 @@ function AppRoutes() {
                     </AuthGuard>
                 }
             />
+            {/* Confirmacion de Reserva (con bottom nav) */}
             <Route
                 path="/reservas/:id/confirmacion"
                 element={
                     <AuthGuard>
-                        <ReservaConfirmacionPage />
+                        <AppLayout>
+                            <ReservaConfirmacionPage />
+                        </AppLayout>
                     </AuthGuard>
                 }
             />
 
-            {/* Páginas placeholder (se llenarán con futuros mockups) */}
+            {/* Favoritos y Reservas (con bottom nav) */}
             <Route
                 path="/buscar"
                 element={
@@ -172,7 +177,7 @@ function AppRoutes() {
                 element={
                     <AuthGuard>
                         <AppLayout>
-                            <PlaceholderPage titulo="Reservas" />
+                            <MisReservasPage />
                         </AppLayout>
                     </AuthGuard>
                 }
@@ -182,7 +187,7 @@ function AppRoutes() {
                 element={
                     <AuthGuard>
                         <AppLayout>
-                            <PlaceholderPage titulo="Favoritos" />
+                            <FavoritosPage />
                         </AppLayout>
                     </AuthGuard>
                 }

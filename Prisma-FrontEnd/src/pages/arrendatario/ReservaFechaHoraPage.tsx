@@ -79,21 +79,67 @@ export default function ReservaFechaHoraPage() {
                                 <div key={d} className="text-[10px] font-bold text-gray-400">{d}</div>
                             ))}
                         </div>
-                        {/* Mockup Dates Grid - Fixed selection for visual demo (9 to 12) */}
+                        {/* Dynamic Calendar Grid for current month (mocked as June 2026) */}
                         <div className="grid grid-cols-7 text-center gap-y-2 text-sm font-medium text-gray-600">
-                            <div className="py-1">31</div>
-                            <div className="py-1">1</div><div className="py-1">2</div><div className="py-1">3</div><div className="py-1">4</div><div className="py-1">5</div><div className="py-1">6</div>
-                            <div className="py-1">7</div><div className="py-1">8</div>
-                            <div className="py-1 bg-[#FF9800] text-white rounded-l-full cursor-pointer" onClick={() => setFechaInicio("2026-06-09")}>9</div>
-                            <div className="py-1 bg-[#FF9800] text-white cursor-pointer" onClick={() => {}}>10</div>
-                            <div className="py-1 bg-[#FF9800] text-white cursor-pointer" onClick={() => {}}>11</div>
-                            <div className="py-1 bg-[#FF9800] text-white rounded-r-full cursor-pointer" onClick={() => {setFechaInicio("2026-06-09"); setFechaFin("2026-06-12");}}>12</div>
-                            <div className="py-1">13</div>
-                            <div className="py-1">14</div><div className="py-1">15</div><div className="py-1">16</div><div className="py-1">17</div><div className="py-1">18</div><div className="py-1">19</div><div className="py-1">20</div>
-                            <div className="py-1">21</div><div className="py-1">22</div>
-                            <div className="py-1 bg-[#FFF9E6] text-[#FF9800] font-bold rounded-full">23</div>
-                            <div className="py-1">24</div><div className="py-1">25</div><div className="py-1">26</div><div className="py-1">27</div>
-                            <div className="py-1">28</div><div className="py-1 bg-[#FFF9E6] text-[#FF9800] font-bold rounded-full">29</div><div className="py-1">30</div>
+                            {/* Empty days before June 1st (Monday is 1, so Sunday 31 is from May) */}
+                            <div className="py-1 text-gray-300">31</div>
+                            {/* Days 1 to 30 */}
+                            {Array.from({ length: 30 }, (_, i) => i + 1).map(day => {
+                                const dateStr = `2026-06-${day.toString().padStart(2, '0')}`;
+                                
+                                let isSelected = false;
+                                let isStart = false;
+                                let isEnd = false;
+                                let isInRange = false;
+
+                                if (fechaInicio) {
+                                    if (dateStr === fechaInicio) { isSelected = true; isStart = true; }
+                                    if (fechaFin && dateStr === fechaFin) { isSelected = true; isEnd = true; }
+                                    if (fechaFin && dateStr > fechaInicio && dateStr < fechaFin) { isInRange = true; }
+                                }
+
+                                const isOnlyOneDay = isStart && isEnd;
+                                const isStartWithoutEnd = isStart && !fechaFin;
+
+                                let bgClass = "";
+                                let textClass = "cursor-pointer hover:bg-gray-100 rounded-full";
+
+                                if (isSelected) {
+                                    bgClass = "bg-[#FF9800]";
+                                    textClass = "text-white font-bold cursor-pointer";
+                                    if (isOnlyOneDay || isStartWithoutEnd) bgClass += " rounded-full";
+                                    else if (isStart) bgClass += " rounded-l-full";
+                                    else if (isEnd) bgClass += " rounded-r-full";
+                                } else if (isInRange) {
+                                    bgClass = "bg-[#FFF9E6]";
+                                    textClass = "text-[#FF9800] font-bold cursor-pointer";
+                                }
+
+                                const handleDateClick = () => {
+                                    if (!fechaInicio || (fechaInicio && fechaFin)) {
+                                        // Start new selection
+                                        setFechaInicio(dateStr);
+                                        setFechaFin("");
+                                    } else {
+                                        // Select end date
+                                        if (dateStr < fechaInicio) {
+                                            setFechaInicio(dateStr);
+                                            setFechaFin(fechaInicio); // Swap
+                                        } else {
+                                            setFechaFin(dateStr);
+                                        }
+                                    }
+                                };
+
+                                return (
+                                    <div key={day} className={`py-1 ${bgClass}`} onClick={handleDateClick}>
+                                        <div className={`w-8 h-8 mx-auto flex items-center justify-center ${textClass}`}>
+                                            {day}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {/* Empty days after June 30 */}
                             <div className="py-1 text-gray-300">1</div><div className="py-1 text-gray-300">2</div><div className="py-1 text-gray-300">3</div><div className="py-1 text-gray-300">4</div>
                         </div>
                     </div>
@@ -105,9 +151,10 @@ export default function ReservaFechaHoraPage() {
                         <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Hora de inicio</h3>
                         <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2">
                             <select value={horaInicio.split(" ")[0]} onChange={(e) => setHoraInicio(`${e.target.value} ${horaInicio.split(" ")[1]}`)} className="bg-transparent font-medium text-gray-700 outline-none appearance-none flex-1">
-                                <option value="09:00">09:00</option>
-                                <option value="10:00">10:00</option>
-                                <option value="11:00">11:00</option>
+                                {Array.from({ length: 12 }, (_, i) => {
+                                    const hour = (i + 1).toString().padStart(2, '0');
+                                    return <option key={hour} value={`${hour}:00`}>{hour}:00</option>;
+                                })}
                             </select>
                             <span className="text-[#FF9800] mr-2">▼</span>
                             <select value={horaInicio.split(" ")[1]} onChange={(e) => setHoraInicio(`${horaInicio.split(" ")[0]} ${e.target.value}`)} className="bg-transparent font-medium text-gray-700 outline-none appearance-none">
@@ -121,9 +168,10 @@ export default function ReservaFechaHoraPage() {
                         <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Hora de fin</h3>
                         <div className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-2">
                             <select value={horaFin.split(" ")[0]} onChange={(e) => setHoraFin(`${e.target.value} ${horaFin.split(" ")[1]}`)} className="bg-transparent font-medium text-gray-700 outline-none appearance-none flex-1">
-                                <option value="12:00">12:00</option>
-                                <option value="01:00">01:00</option>
-                                <option value="02:00">02:00</option>
+                                {Array.from({ length: 12 }, (_, i) => {
+                                    const hour = (i + 1).toString().padStart(2, '0');
+                                    return <option key={hour} value={`${hour}:00`}>{hour}:00</option>;
+                                })}
                             </select>
                             <span className="text-[#FF9800] mr-2">▼</span>
                             <select value={horaFin.split(" ")[1]} onChange={(e) => setHoraFin(`${horaFin.split(" ")[0]} ${e.target.value}`)} className="bg-transparent font-medium text-gray-700 outline-none appearance-none">

@@ -11,13 +11,16 @@ export default function ReservaPagoPage() {
 
     const espacio = espacios.find(e => e.id === id);
 
-    useEffect(() => {
-        if (!espacio || !reservaEnCurso) {
-            navigate("/inicio");
-        }
-    }, [espacio, reservaEnCurso, navigate]);
+    // We don't use aggressive useEffect redirect here to avoid race conditions when clearing state
+    if (!espacio || !reservaEnCurso || !usuarioActual) {
+        return (
+            <div className="flex-1 flex items-center justify-center bg-[#F5F7F9]">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF9800]"></div>
+            </div>
+        );
+    }
 
-    if (!espacio || !reservaEnCurso || !usuarioActual) return null;
+
 
     const handleConfirmar = async () => {
         if (!aceptaPoliticas) return;

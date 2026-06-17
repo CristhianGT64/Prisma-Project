@@ -10,13 +10,13 @@ export default function ReservaConfirmacionPage() {
     const reserva = reservas.find(r => r.id === id);
     const espacio = espacios.find(e => e.id === reserva?.espacioId);
 
-    useEffect(() => {
-        if (!reserva || !espacio) {
-            navigate("/inicio");
-        }
-    }, [reserva, espacio, navigate]);
-
-    if (!reserva || !espacio) return null;
+    if (!reserva || !espacio) {
+        return (
+            <div className="flex-1 flex items-center justify-center bg-white text-gray-500">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF9800]"></div>
+            </div>
+        );
+    }
 
     const formatFecha = (fechaStr: string) => {
         if (!fechaStr) return "";
@@ -30,54 +30,55 @@ export default function ReservaConfirmacionPage() {
     };
 
     return (
-        <div className="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center p-5 text-center relative pb-24">
+        <div className="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center p-5 pt-16 text-center relative pb-24">
             
-            <div className="w-20 h-20 bg-[#FFF9E6] rounded-full flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            {/* Header decorativo superior vacío (como en la imagen) */}
+            <div className="absolute top-0 left-0 w-full h-14 bg-[#00BFA5]"></div>
+
+            <h1 className="text-sm font-extrabold text-gray-800 mb-6 mt-8">¡Reserva confirmada!</h1>
+
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-[#FFB300]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
-
-            <h1 className="text-xl font-bold text-gray-800 mb-2">Reserva confirmada!</h1>
             
-            <p className="text-sm text-gray-500 mb-6">
-                Tu espacio ha sido reservado exitosamente.<br/>
+            <p className="text-xs text-gray-600 mb-1 max-w-[250px] leading-relaxed">
+                Tu espacio ha sido reservado exitosamente<br/>
                 El código de reserva es:
             </p>
 
-            <div className="bg-[#FFF9E6] px-6 py-2.5 rounded-full border border-[#FFE0B2] mb-8">
-                <span className="font-bold text-[#FF9800] tracking-widest">{reserva.id}</span>
+            <div className="mb-6">
+                <span className="font-extrabold text-lg text-[#FF9800] tracking-widest">{reserva.id}</span>
             </div>
 
-            <p className="text-xs text-gray-400 mb-6 max-w-xs mx-auto">
-                Preséntalo al momento de llegar al lugar para verificar tu identidad.
+            <p className="text-xs text-gray-600 mb-8 max-w-[220px] leading-relaxed">
+                Preséntalo al momento de llegar al lugar para verificar tu identidad
             </p>
 
-            {/* Resumen simplificado */}
-            <div className="w-full bg-[#E0F7F4] rounded-2xl p-5 border border-[#B2EBF2] shadow-sm flex flex-col gap-3 text-left">
-                <div className="flex justify-between items-start text-sm">
-                    <span className="font-semibold text-gray-600">Espacio:</span>
-                    <span className="font-medium text-gray-800 text-right">{espacio.nombre}</span>
+            {/* Resumen simplificado (Tarjeta verde menta) */}
+            <div className="w-full bg-[#A5D6A7] rounded-3xl p-5 shadow-sm flex flex-col gap-3 text-left mb-8 mx-4 max-w-[320px]">
+                <div className="flex justify-between items-start text-[11px]">
+                    <span className="font-extrabold text-gray-800">Espacio:</span>
+                    <span className="font-medium text-gray-700 text-right">{espacio.nombre}</span>
                 </div>
-                <div className="flex justify-between items-start text-sm border-t border-[#B2EBF2]/50 pt-3">
-                    <span className="font-semibold text-gray-600">Fechas:</span>
-                    <span className="font-medium text-gray-800">{getFechasTexto()}</span>
+                <div className="flex justify-between items-start text-[11px] border-t border-black/10 pt-3">
+                    <span className="font-extrabold text-gray-800">Fechas:</span>
+                    <span className="font-medium text-gray-700">{getFechasTexto()}</span>
                 </div>
-                <div className="flex justify-between items-start text-sm border-t border-[#B2EBF2]/50 pt-3">
-                    <span className="font-semibold text-gray-600">Horario:</span>
-                    <span className="font-medium text-gray-800">{reserva.horaInicio} - {reserva.horaFin}</span>
+                <div className="flex justify-between items-start text-[11px] border-t border-black/10 pt-3">
+                    <span className="font-extrabold text-gray-800">Horario:</span>
+                    <span className="font-medium text-gray-700">{reserva.horaInicio} - {reserva.horaFin}</span>
                 </div>
             </div>
 
-            {/* Bottom Action Bar */}
-            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-100 p-4 flex justify-center z-20">
-                <button 
-                    onClick={() => navigate("/reservas")}
-                    className="w-full bg-[#FF9800] text-white font-bold py-3.5 rounded-xl hover:bg-[#F57C00] active:scale-[0.98] transition-all"
-                >
-                    Ver mis reservas
-                </button>
-            </div>
+            {/* Botón naranja */}
+            <button 
+                onClick={() => navigate("/reservas")}
+                className="bg-[#FF9800] text-white font-bold text-sm px-6 py-2.5 rounded-xl hover:bg-[#F57C00] active:scale-[0.98] transition-all shadow-md"
+            >
+                Ver mis reservas
+            </button>
         </div>
     );
 }
