@@ -18,6 +18,12 @@ import PerfilPage from "./pages/shared/PerfilPage";
 import EditarPerfilPage from "./pages/shared/EditarPerfilPage";
 import InicioPage from "./pages/shared/InicioPage";
 
+// Arrendatario (Tenant) Flows
+import EspacioDetallePage from "./pages/arrendatario/EspacioDetallePage";
+import ReservaFechaHoraPage from "./pages/arrendatario/ReservaFechaHoraPage";
+import ReservaPagoPage from "./pages/arrendatario/ReservaPagoPage";
+import ReservaConfirmacionPage from "./pages/arrendatario/ReservaConfirmacionPage";
+
 // Guard de autenticación
 function AuthGuard({ children }: { children: React.ReactNode }) {
     const { usuarioActual } = useApp();
@@ -112,6 +118,40 @@ function AppRoutes() {
                 element={
                     <AuthGuard>
                         <EditarPerfilPage />
+                    </AuthGuard>
+                }
+            />
+
+            {/* Detalle y Reserva (sin bottom nav) */}
+            <Route
+                path="/espacios/:id"
+                element={
+                    <AuthGuard>
+                        <EspacioDetallePage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/espacios/:id/reservar/paso-1"
+                element={
+                    <AuthGuard>
+                        <ReservaFechaHoraPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/espacios/:id/reservar/paso-2"
+                element={
+                    <AuthGuard>
+                        <ReservaPagoPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/reservas/:id/confirmacion"
+                element={
+                    <AuthGuard>
+                        <ReservaConfirmacionPage />
                     </AuthGuard>
                 }
             />
