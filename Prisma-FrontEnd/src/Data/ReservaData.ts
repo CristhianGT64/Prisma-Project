@@ -8,7 +8,7 @@ export const reservas: Reserva[] = [
         usuarioArrendadorId: "USR002",
         fechaInicio: "2024-07-01",
         fechaFin: "2024-07-05",
-        estado: "confirmada",
+        estado: "completada",
         precioTotal: 500,
         fechaCreacion: "2024-06-14",
         cantidadPersonas: 4,

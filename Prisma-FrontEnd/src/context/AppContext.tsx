@@ -8,6 +8,19 @@ import { espaciosData } from "../Data/EspacioData";
 import { favoritos as favoritosIniciales } from "../Data/FavoritoData";
 import { reservas as reservasIniciales } from "../Data/ReservaData";
 
+export interface Tarjeta {
+    id: string;
+    last4: string;
+    nombre: string;
+    tipo: string;
+}
+
+const mockTarjetasIniciales: Tarjeta[] = [
+    { id: "1", last4: "7845", nombre: "JIMEY EDUARDO SANTOS ORTEGA", tipo: "Débito" },
+    { id: "2", last4: "4195", nombre: "JIMEY EDUARDO SANTOS ORTEGA", tipo: "Débito" },
+    { id: "3", last4: "3156", nombre: "JIMEY EDUARDO SANTOS ORTEGA", tipo: "Débito" }
+];
+
 // Estado temporal del flujo de reserva (entre pantallas)
 export interface ReservaEnCurso {
     espacioId: string;
@@ -45,6 +58,7 @@ interface AppContextType {
     reservas: Reserva[];
     agregarReserva: (reserva: Omit<Reserva, "id" | "fechaCreacion">) => string;
     cancelarReserva: (id: string) => void;
+    guardarResena: (reservaId: string) => void;
 
     // Flujo de reserva temporal (entre pantallas)
     reservaEnCurso: ReservaEnCurso | null;
@@ -60,6 +74,13 @@ interface AppContextType {
     // Código de descuento activo
     codigoDescuentoActivo: string | null;
     setCodigoDescuentoActivo: (c: string | null) => void;
+
+    // Tarjetas
+    tarjetas: Tarjeta[];
+    agregarTarjeta: (tarjeta: Omit<Tarjeta, "id">) => void;
+    eliminarTarjeta: (id: string) => void;
+    tarjetaSeleccionada: string | null;
+    setTarjetaSeleccionada: (id: string | null) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -83,6 +104,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const [reservaEnCurso, setReservaEnCurso] = useState<ReservaEnCurso | null>(null);
     const [ultimaReservaId, setUltimaReservaId] = useState<string | null>(null);
     const [codigoDescuentoActivo, setCodigoDescuentoActivo] = useState<string | null>(null);
+    const [tarjetas, setTarjetas] = useState<Tarjeta[]>(mockTarjetasIniciales);
+    const [tarjetaSeleccionada, setTarjetaSeleccionada] = useState<string | null>("1");
 
     // AUTH
     const login = (correo: string, password: string): boolean => {
@@ -176,16 +199,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setReservas(prev => prev.map(r => r.id === id ? { ...r, estado: "cancelada" as const } : r));
     };
 
+    const guardarResena = (reservaId: string) => {
+        setReservas(prev => prev.map(r => r.id === reservaId ? { ...r, resenaDejada: true } : r));
+    };
+
+    // TARJETAS
+    const agregarTarjeta = (tarjeta: Omit<Tarjeta, "id">) => {
+        const id = `TAR${String(tarjetas.length + 1).padStart(3, "0")}`;
+        const nueva: Tarjeta = { ...tarjeta, id };
+        setTarjetas(prev => [...prev, nueva]);
+        setTarjetaSeleccionada(id);
+    };
+
+    const eliminarTarjeta = (id: string) => {
+        setTarjetas(prev => prev.filter(t => t.id !== id));
+        if (tarjetaSeleccionada === id) {
+            setTarjetaSeleccionada(null);
+        }
+    };
+
     return (
         <AppContext.Provider value={{
             usuarioActual, login, logout, registrar, actualizarPerfil,
             espacios, agregarEspacio, actualizarEspacio, eliminarEspacio, obtenerEspaciosPorArrendador,
             favoritos, toggleFavorito, esFavorito,
-            reservas, agregarReserva, cancelarReserva,
+            reservas, agregarReserva, cancelarReserva, guardarResena,
             reservaEnCurso, setReservaEnCurso,
             ultimaReservaId, setUltimaReservaId,
             usuarios,
             codigoDescuentoActivo, setCodigoDescuentoActivo,
+            tarjetas, agregarTarjeta, eliminarTarjeta, tarjetaSeleccionada, setTarjetaSeleccionada,
         }}>
             {children}
         </AppContext.Provider>

@@ -6,6 +6,7 @@ export default function MisReservasPage() {
     const navigate = useNavigate();
     const { reservas, espacios, usuarioActual, cancelarReserva } = useApp();
     const [tabActiva, setTabActiva] = useState<"activas" | "historial">("activas");
+    const [reservaACancelar, setReservaACancelar] = useState<string | null>(null);
 
     if (!usuarioActual) return null;
 
@@ -24,8 +25,15 @@ export default function MisReservasPage() {
         return fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     };
 
+    const handleConfirmCancel = () => {
+        if (reservaACancelar) {
+            cancelarReserva(reservaACancelar);
+            setReservaACancelar(null);
+        }
+    };
+
     return (
-        <div className="flex-1 overflow-y-auto bg-[#F5F7F9] pb-24">
+        <div className="flex-1 overflow-y-auto bg-[#F5F7F9] pb-24 relative">
             {/* Header */}
             <div className="bg-[#00BFA5] px-5 py-4 sticky top-0 z-10 shadow-sm flex items-center justify-center">
                 <h1 className="text-white font-bold text-lg">Mis reservas</h1>
@@ -102,29 +110,74 @@ export default function MisReservasPage() {
 
                                 {tabActiva === "activas" ? (
                                     <button 
-                                        onClick={() => {
-                                            if (window.confirm("¿Seguro que deseas cancelar esta reserva?")) {
-                                                cancelarReserva(reserva.id);
-                                            }
-                                        }}
+                                        onClick={() => setReservaACancelar(reserva.id)}
                                         className="w-full bg-[#B2DFDB] hover:bg-[#80CBC4] text-[#00695C] font-bold py-2.5 rounded-xl text-sm transition-colors"
                                     >
                                         Cancelar reserva
                                     </button>
                                 ) : (
-                                    <button 
-                                        onClick={() => alert("Función de reseña próxima a implementarse")}
-                                        disabled={reserva.estado === "cancelada"}
-                                        className="w-full border-2 border-[#FF9800] text-[#FF9800] hover:bg-[#FFF9E6] font-bold py-2 rounded-xl text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        Dejar Reseña
-                                    </button>
+                                    reserva.estado === "completada" ? (
+                                        reserva.resenaDejada ? (
+                                            <div className="w-full text-center text-[#00BFA5] font-bold py-2 text-sm">
+                                                ✓ Reseña enviada
+                                            </div>
+                                        ) : (
+                                            <button 
+                                                onClick={() => navigate(`/reservas/${reserva.id}/resena`)}
+                                                className="w-full border-2 border-[#FF9800] text-[#FF9800] hover:bg-[#FFF9E6] font-bold py-2 rounded-xl text-sm transition-colors"
+                                            >
+                                                Dejar Reseña
+                                            </button>
+                                        )
+                                    ) : (
+                                        <button 
+                                            disabled
+                                            className="w-full border-2 border-gray-300 text-gray-400 font-bold py-2 rounded-xl text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Cancelada
+                                        </button>
+                                    )
                                 )}
                             </div>
                         );
                     })
                 )}
             </div>
+
+            {/* Custom Modal - Cancelar Reserva */}
+            {reservaACancelar && (
+                <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-5">
+                    <div className="bg-white rounded-[24px] p-6 w-full max-w-[340px] shadow-2xl relative animate-fadeInScale">
+                        <h2 className="text-[17px] font-extrabold text-gray-800 text-center mb-5 pr-2">
+                            ¿Estás seguro que quieres cancelar tu reserva?
+                        </h2>
+                        
+                        <div className="bg-[#FFF8E7] rounded-2xl p-4 mb-6">
+                            <p className="text-xs text-gray-700 leading-relaxed mb-3 font-medium">
+                                Si cancelas tu reserva antes de 3 días de la fecha que escogiste, todavía tienes derecho a reembolso.
+                            </p>
+                            <p className="text-xs text-gray-700 leading-relaxed font-medium">
+                                Puedes contactarte con soporte si tienes alguna duda en soporte@prisma.com
+                            </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                            <button 
+                                onClick={() => setReservaACancelar(null)}
+                                className="flex-1 bg-white border-2 border-[#00BFA5] text-[#00BFA5] font-extrabold py-3 rounded-[14px] text-sm hover:bg-[#F0FDF8] transition-colors"
+                            >
+                                No estoy seguro
+                            </button>
+                            <button 
+                                onClick={handleConfirmCancel}
+                                className="flex-1 bg-[#FF9800] text-white font-extrabold py-3 rounded-[14px] text-sm hover:bg-[#F57C00] transition-colors"
+                            >
+                                Sí, estoy seguro
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

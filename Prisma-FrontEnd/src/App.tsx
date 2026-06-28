@@ -25,6 +25,12 @@ import ReservaPagoPage from "./pages/arrendatario/ReservaPagoPage";
 import ReservaConfirmacionPage from "./pages/arrendatario/ReservaConfirmacionPage";
 import MisReservasPage from "./pages/arrendatario/MisReservasPage";
 import FavoritosPage from "./pages/arrendatario/FavoritosPage";
+import MisTarjetasPage from "./pages/arrendatario/MisTarjetasPage";
+import AgregarTarjetaPage from "./pages/arrendatario/AgregarTarjetaPage";
+import DejarResenaPage from "./pages/arrendatario/DejarResenaPage";
+
+// Shared
+import SuscripcionesPage from "./pages/shared/SuscripcionesPage";
 
 // Guard de autenticación
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -123,6 +129,36 @@ function AppRoutes() {
                     </AuthGuard>
                 }
             />
+            <Route
+                path="/perfil/tarjetas"
+                element={
+                    <AuthGuard>
+                        <AppLayout>
+                            <MisTarjetasPage />
+                        </AppLayout>
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/perfil/tarjetas/nueva"
+                element={
+                    <AuthGuard>
+                        <AppLayout>
+                            <AgregarTarjetaPage />
+                        </AppLayout>
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/perfil/suscripciones"
+                element={
+                    <AuthGuard>
+                        <AppLayout>
+                            <SuscripcionesPage />
+                        </AppLayout>
+                    </AuthGuard>
+                }
+            />
 
             {/* Detalle y Reserva (sin bottom nav) */}
             <Route
@@ -146,6 +182,14 @@ function AppRoutes() {
                 element={
                     <AuthGuard>
                         <ReservaPagoPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/reservas/:id/resena"
+                element={
+                    <AuthGuard>
+                        <DejarResenaPage />
                     </AuthGuard>
                 }
             />

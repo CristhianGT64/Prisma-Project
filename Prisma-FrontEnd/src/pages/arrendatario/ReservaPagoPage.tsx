@@ -6,10 +6,11 @@ import ResumenReserva from "../../components/ui/ResumenReserva";
 export default function ReservaPagoPage() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
-    const { espacios, reservaEnCurso, agregarReserva, usuarioActual, setReservaEnCurso, setUltimaReservaId } = useApp();
+    const { espacios, reservaEnCurso, agregarReserva, usuarioActual, setReservaEnCurso, setUltimaReservaId, tarjetas, tarjetaSeleccionada } = useApp();
     const [aceptaPoliticas, setAceptaPoliticas] = useState(false);
 
     const espacio = espacios.find(e => e.id === id);
+    const tarjetaSeleccionadaObj = tarjetas.find(t => t.id === tarjetaSeleccionada);
 
     // We don't use aggressive useEffect redirect here to avoid race conditions when clearing state
     if (!espacio || !reservaEnCurso || !usuarioActual) {
@@ -62,13 +63,22 @@ export default function ReservaPagoPage() {
                 <div>
                     <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-3">Selecciona el método de pago</h3>
                     
-                    <div className="bg-white border-2 border-[#FF9800] rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer">
+                    <div 
+                        onClick={() => navigate('/perfil/tarjetas')}
+                        className="bg-white border-2 border-[#FF9800] rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer"
+                    >
                         <div className="flex gap-3 items-center">
                             <div className="w-10 h-6 bg-gray-200 rounded text-[8px] font-bold text-gray-400 flex items-center justify-center">VISA</div>
                             <div>
                                 <p className="text-sm font-bold text-gray-800">Tarjeta de Crédito / Débito</p>
-                                <p className="text-xs text-gray-500 font-mono tracking-widest mt-0.5">**** **** **** 7845</p>
-                                <p className="text-[10px] text-gray-400 mt-0.5">JUAN EDUARDO SANTOS ORTEGA</p>
+                                {tarjetaSeleccionadaObj ? (
+                                    <>
+                                        <p className="text-xs text-gray-500 font-mono tracking-widest mt-0.5">**** **** **** {tarjetaSeleccionadaObj.last4}</p>
+                                        <p className="text-[10px] text-gray-400 mt-0.5 uppercase">{tarjetaSeleccionadaObj.nombre}</p>
+                                    </>
+                                ) : (
+                                    <p className="text-xs text-gray-500 mt-0.5">Ninguna tarjeta seleccionada</p>
+                                )}
                             </div>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">

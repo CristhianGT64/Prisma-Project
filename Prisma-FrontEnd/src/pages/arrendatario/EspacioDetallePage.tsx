@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router";
 import { useApp } from "../../context/AppContext";
-import ServicioTag from "../../components/ui/ServicioTag";
 
 export default function EspacioDetallePage() {
     const navigate = useNavigate();
@@ -28,8 +27,8 @@ export default function EspacioDetallePage() {
                     <img src={espacio.imagenes[0].url} alt={espacio.nombre} className="w-full h-full object-cover" />
                 )}
                 {/* Back button */}
-                <button 
-                    onClick={() => navigate(-1)} 
+                <button
+                    onClick={() => navigate(-1)}
                     className="absolute top-4 left-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white z-10"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,13 +64,28 @@ export default function EspacioDetallePage() {
                 </div>
 
                 {/* Ubicación */}
-                <div className="mb-6">
-                    <h3 className="text-sm font-bold text-gray-800 mb-2">Ubicación</h3>
-                    <div className="flex items-start gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-[#FF9800] mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                            <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                        </svg>
-                        <p className="text-xs text-gray-600 font-medium">{espacio.direccion}, {espacio.ciudad}</p>
+                <div className="mb-6 flex justify-between gap-4">
+                    <div className="flex-1">
+                        <h3 className="text-sm font-bold text-gray-800 mb-2">Ubicación</h3>
+                        <div className="flex items-start gap-2 mt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#00BFA5] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <p className="text-xs text-gray-600 font-medium">{espacio.direccion}, {espacio.ciudad}</p>
+                        </div>
+                    </div>
+                    <div className="w-[120px] h-[120px] rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200 pointer-events-none">
+                        <iframe
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            scrolling="no"
+                            marginHeight={0}
+                            marginWidth={0}
+                            src="https://www.openstreetmap.org/export/embed.html?bbox=-122.45%2C37.75%2C-122.39%2C37.79&layer=mapnik&marker=37.77%2C-122.42"
+                            style={{ border: 0 }}
+                        ></iframe>
                     </div>
                 </div>
 
@@ -111,7 +125,7 @@ export default function EspacioDetallePage() {
             {/* Bottom Action Bar */}
             <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-gray-100 p-4 flex items-center justify-between z-20">
                 <div className="flex items-center gap-4 w-full">
-                    <button 
+                    <button
                         onClick={() => toggleFavorito(espacio.id)}
                         className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isFav ? 'bg-[#FFEBEE] text-[#EF5350]' : 'bg-gray-100 text-gray-400'}`}
                     >
@@ -119,7 +133,7 @@ export default function EspacioDetallePage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                     </button>
-                    <button 
+                    <button
                         onClick={() => navigate(`/espacios/${espacio.id}/reservar/paso-1`)}
                         className="flex-1 bg-[#FF9800] text-white font-bold py-3.5 rounded-xl hover:bg-[#F57C00] active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
                     >

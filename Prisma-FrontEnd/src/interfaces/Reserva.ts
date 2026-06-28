@@ -11,4 +11,5 @@ export interface Reserva {
     cantidadPersonas?: number;
     horaInicio?: string;
     horaFin?: string;
+    resenaDejada?: boolean;
 }
